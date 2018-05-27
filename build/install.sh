@@ -1,32 +1,38 @@
 #!/bin/bash
 
 PWD_DIR=`pwd`
-MachineIp=
+MachineIp=127.0.0.1
 MachineName=
 MysqlIncludePath=
 MysqlLibPath=
 
+INSTALL=apt-get
+
+test -f mysql-5.6.26.tar.gz || wget https://downloads.mysql.com/archives/get/file/mysql-5.6.26-linux-glibc2.5-x86_64.tar.gz -O mysql-5.6.26.tar.gz
+test -f apache-maven-3.3.9-bin.tar.gz || wget http://mirrors.hust.edu.cn/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+test -f jdk-8u171-linux-x64.tar.gz || wget http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.tar.gz
+test -f resin-4.0.49.tar.gz || wget http://www.caucho.com/download/resin-4.0.49.tar.gz
 
 ##安装glibc-devel
 
-yum install -y glibc-devel
+$INSTALL install -y glibc-devel
 
 ##安装flex、bison
 
-yum install -y flex bison
+$INSTALL install -y flex bison
 
 ##安装cmake
 
-tar zxvf cmake-2.8.8.tar.gz
-cd cmake-2.8.8
-./bootstrap
-make
-make install
-cd -
+#tar zxvf cmake-2.8.8.tar.gz
+#cd cmake-2.8.8
+#./bootstrap
+#make
+#make install
+#cd -
 
 ##安装java jdk
-tar zxvf jdk-8u111-linux-x64.tar.gz
-echo "export JAVA_HOME=${PWD_DIR}/jdk1.8.0_111" >> /etc/profile
+tar zxvf jdk-8u171-linux-x64.tar.gz
+echo "export JAVA_HOME=${PWD_DIR}/jdk1.8.0_171" >> /etc/profile
 echo "CLASSPATH=\$JAVA_HOME/lib/dt.jar:\$JAVA_HOME/lib/tools.jar" >> /etc/profile
 echo "PATH=\$JAVA_HOME/bin:\$PATH" >> /etc/profile
 echo "export PATH JAVA_HOME CLASSPATH" >> /etc/profile
@@ -57,15 +63,15 @@ cd ${PWD_DIR}
 ln -s /usr/local/resin-4.0.49 /usr/local/resin
 
 ##安装rapidjson
-yum install -y git
+$INSTALL install -y git
 
 git clone https://github.com/Tencent/rapidjson.git
 
 cp -r ./rapidjson ../cpp/thirdparty/
 
 ## 安装mysql
-yum install -y ncurses-devel
-yum install -y zlib-devel
+$INSTALL install -y ncurses-devel
+$INSTALL install -y zlib-devel
 
 if [   ! -n "$MysqlIncludePath"  ] 
   then
@@ -85,7 +91,7 @@ fi
 
 
 
-yum install -y perl
+$INSTALL install -y perl
 cd /usr/local/mysql
 useradd mysql
 rm -rf /usr/local/mysql/data
@@ -94,7 +100,7 @@ ln -s /data/mysql-data /usr/local/mysql/data
 chown -R mysql:mysql /data/mysql-data /usr/local/mysql/data
 cp support-files/mysql.server /etc/init.d/mysql
 
-yum install -y perl-Module-Install.noarch
+$INSTALL install -y perl-Module-Install.noarch
 perl scripts/mysql_install_db --user=mysql
 cd -
 
