@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+
+use strict;
+#use warnings;
+
+my $param1 = $ARGV[0];
+my $param2 = $ARGV[1];
+
+if ( defined $param2 ){
+    if ( $param1 =~ /list/ ){
+        system("sysv-rc-conf --list $param2");
+    }elsif( $param2 eq 'on' ){
+        system("sysv-rc-conf --level 2345 $param1 on");
+        system("sysv-rc-conf --list $param1");
+    }elsif( $param2 eq 'off' ){
+        system("sysv-rc-conf --level 2345 $param1 off");
+        system("sysv-rc-conf --list $param1");
+        }else{
+            print("Usage: chkconfig < option > | --list | [ service_name [ command  < on | off > ] ]\n");
+            exit(1);
+    }
+}else{
+    system("sysv-rc-conf --list $param2");
